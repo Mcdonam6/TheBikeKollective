@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "438429693439",
+    "project_id": "bike-kollective-5c5f2",
+    "storage_bucket": "bike-kollective-5c5f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:438429693439:android:0a8968caa518fc3f8c63ca",
+        "android_client_info": {
+          "package_name": "com.example.the_bike_kollective"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "438429693439-dntb3tsoglso35hari8uof2b0564crs5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.the_bike_kollective",
+            "certificate_hash": "187b57c0b5d27393c0c8d350bba50024e35d5ad1"
+          }
+        },
+        {
+          "client_id": "438429693439-f1jtvbrf7bcgq3msq4trl8291svtlmiu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwbWle-g1IVMKq9Br0Uu9HPp78I8t2CEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "438429693439-f1jtvbrf7bcgq3msq4trl8291svtlmiu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
