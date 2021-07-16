@@ -3,6 +3,7 @@ import 'package:the_bike_kollective/Pages/home.dart';
 import 'package:the_bike_kollective/Pages/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+
 Future main() async {
 
   //Firebase authentication required for Google Authentication login
@@ -20,17 +21,6 @@ Future main() async {
 
   ));
 }
-
-// void main() => runApp(MaterialApp(
-//
-//   //create routes
-//     routes: {
-//       '/':(context)=> Login(), //initial route can be updated to test screens
-//       '/home':(context)=> Home(), //home screen
-//       '/login':(context)=> Login(), //login screen
-//     }
-//
-// ));
 
 
 

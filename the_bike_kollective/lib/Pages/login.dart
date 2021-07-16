@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:the_bike_kollective/widget/logged_in_widget.dart';
+import 'package:the_bike_kollective/Pages/account.dart';
 import 'package:the_bike_kollective/widget/sign_up_widget.dart';
 import 'package:the_bike_kollective/provider/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -23,13 +23,9 @@ class Login extends StatelessWidget {
             builder:(context, snapshot){
               final provider = Provider.of<GoogleSignInProvider>(context, listen:false);
 
-              if(provider.isSigningIn!){
-                return buildLoading();
-              }
-
               //TODO update this page with correct login page from Michael
-              else if(snapshot.hasData){
-                return LoggedInWidget();
+              if(snapshot.hasData){
+                return Account();
               }
 
               else {
@@ -40,5 +36,4 @@ class Login extends StatelessWidget {
       )
     );
   }
-  Widget buildLoading()=> Center(child: CircularProgressIndicator());
 }
