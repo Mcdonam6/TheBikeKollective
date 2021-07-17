@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the_bike_kollective/Pages/account.dart';
+import 'package:the_bike_kollective/Pages/home.dart';
 import 'package:the_bike_kollective/widget/sign_up_widget.dart';
 import 'package:the_bike_kollective/provider/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -20,12 +21,12 @@ class Login extends StatelessWidget {
         //state and show the appropriate page
         child: StreamBuilder(
             stream: FirebaseAuth.instance.authStateChanges(),
+
             builder:(context, snapshot){
               final provider = Provider.of<GoogleSignInProvider>(context, listen:false);
 
-              //TODO update this page with correct login page from Michael
               if(snapshot.hasData){
-                return Account();
+                return Home();
               }
 
               else {
