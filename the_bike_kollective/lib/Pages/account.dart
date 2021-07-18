@@ -10,6 +10,7 @@ class Account extends StatefulWidget {
 
 class _AccountState extends State<Account> {
   final user = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
