@@ -30,18 +30,19 @@ dependencies:
   #google sign in plug ins
   firebase_auth: ^2.0.0
   google_sign_in: ^5.0.4
-
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+  # Camera plugins 
+  camera:
+  path_provider:
+  path:
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   provider: ^5.0.0
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

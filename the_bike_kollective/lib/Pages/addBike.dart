@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:the_bike_kollective/components/formattedFormInput.dart';
+import 'package:the_bike_kollective/widget/formattedFormInput.dart';
+import 'package:the_bike_kollective/Pages/takePicture.dart';
 
 class AddBike extends StatefulWidget {
+  final cameras;
+  const AddBike({this.cameras});
+
   @override
-  _AddBikeState createState() => _AddBikeState();
+  _AddBikeState createState() => _AddBikeState(cameras);
 }
 
 const agreement = '''Bike Donation Agreement: 
@@ -12,11 +16,13 @@ The Bike I am donating is my bike to donate.
 The bike works, and I release interest in the bike after submitting this form.
 
 After donation, this bike belongs to the kollective.''';
-// bool _photoAdded = false;
 
 class _AddBikeState extends State<AddBike> {
+  final cameras;
   final GlobalKey<FormState> _addBikeFormKey = GlobalKey<FormState>();
   Widget bikePhoto = Icon(Icons.add_a_photo);
+
+  _AddBikeState(this.cameras);
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +40,17 @@ class _AddBikeState extends State<AddBike> {
           children: [
             Flexible(
               flex: 6,
-              child: (Container(
-                color: Colors.grey,
-                width: double.infinity,
-                height: double.infinity,
-                margin: EdgeInsets.all(30),
-                child: bikePhoto,
-              )),
-            ), //Photo Icon/Add Button
+              child: GestureDetector(
+                onTap: () => _updatePhoto(bikePhoto, cameras, context),
+                child: Container(
+                  color: Colors.grey,
+                  width: double.infinity,
+                  height: double.infinity,
+                  margin: EdgeInsets.all(30),
+                  child: bikePhoto,
+                ),
+              ), //Photo Icon/Add Button
+            ),
             formattedFormInput(placeholderTxt: 'Bike Name'),
             formattedFormInput(placeholderTxt: 'Bike Type'),
             formattedFormInput(placeholderTxt: 'Bike Details'),
@@ -68,6 +77,10 @@ class _AddBikeState extends State<AddBike> {
   }
 }
 
-// void _updatePhoto(Widget photo) {
-//   // photo = ;
-// }
+void _updatePhoto(Widget bikePhoto, List cameras, BuildContext context) {
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              TakePicture(picture: bikePhoto, cameras: cameras)));
+}

@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:the_bike_kollective/Pages/findBike.dart';
 import 'package:the_bike_kollective/Pages/addBike.dart';
 import 'package:the_bike_kollective/Pages/reportIssue.dart';
-
 import 'package:the_bike_kollective/Pages/account.dart';
 
-
-
 class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
+  final cameras;
+
+  const Home({Key? key, this.cameras}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +27,7 @@ class Home extends StatelessWidget {
           children: [
             Account(),
             FindBike(),
-            AddBike(),
+            AddBike(cameras: cameras),
             ReportIssue(),
           ],
         ),
