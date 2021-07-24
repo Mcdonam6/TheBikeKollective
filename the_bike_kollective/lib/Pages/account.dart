@@ -30,12 +30,12 @@ class _AccountState extends State<Account> {
             SizedBox(height: 8),
             CircleAvatar(
               maxRadius: 25,
-              backgroundImage: NetworkImage(user!.photoURL!),
+              //backgroundImage: NetworkImage(user!.photoURL!),
             ),
             SizedBox(height:8),
-            Text('Name ' + user!.displayName!),
+            //Text('Name ' + user!.displayName!),
             SizedBox(height:8),
-            Text('Email ' + user!.email!),
+            //Text('Email ' + user!.email!),
             ElevatedButton(onPressed: () {
               final provider = Provider.of<GoogleSignInProvider>(context, listen:false);
               provider.logout();
