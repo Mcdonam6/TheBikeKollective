@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:location/location.dart';
 
 class MapsPage extends StatefulWidget {
 
@@ -16,6 +16,9 @@ class _MapsPageState extends State<MapsPage> {
 
   //set that refreshes with all bike markers
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
+  //get user location
+  Location location = new Location();
 
 
   //get bike data returned from Firestore and each bike to the bike markers set
@@ -60,6 +63,28 @@ class _MapsPageState extends State<MapsPage> {
     super.initState();
   }
 
+  //function that will execute when map view is created
+  _onMapCreated(GoogleMapController controller){
+    setState(() {
+      myController = controller;
+      _animateToUser();
+    });
+  }
+
+
+  //function get user location and then zoom to location when the map is first open
+  _animateToUser() async {
+    var pos = await location.getLocation();
+    print(pos);
+    myController.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(pos.latitude!, pos.longitude!),
+          zoom: 17.0,
+        )
+    )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     
@@ -85,9 +110,8 @@ class _MapsPageState extends State<MapsPage> {
           target: LatLng(37.7749, -122.4194),
           zoom: 14.0,
         ),
-        onMapCreated: (GoogleMapController controller){
-          myController = controller;
-        },
+        onMapCreated:_onMapCreated,
+        myLocationEnabled: true,
       )
     );
   }
