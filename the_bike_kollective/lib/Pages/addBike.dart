@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:the_bike_kollective/objects/bike.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:location/location.dart';
+import 'package:the_bike_kollective/objects/bike.dart';
 
 class AddBike extends StatefulWidget {
   @override
@@ -28,6 +31,7 @@ class _AddBikeState extends State<AddBike> {
 
   @override
   Widget build(BuildContext context) {
+    double screenSize = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -38,195 +42,223 @@ class _AddBikeState extends State<AddBike> {
       ),
       body: Form(
         key: _addBikeFormKey,
-        child: Column(
-          children: [
-            Flexible(
-              flex: 6,
-              child: GestureDetector(
-                onTap: () {
-                  _updatePhoto(bikePhoto, context);
-                  setState(() {});
-                },
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                key: UniqueKey(),
+                height: screenSize * .4,
+                child: GestureDetector(
+                  onTap: () {
+                    _updatePhoto(addition, context).then(
+                      (value) => setState(() {
+                        if (addition.image != null) {
+                          bikePhoto = Container(
+                            key: UniqueKey(),
+                            child: Image.file(addition.image!),
+                          );
+                        }
+                      }),
+                    );
+                  },
+                  child: Container(
+                    color: Colors.grey,
+                    width: double.infinity,
+                    height: double.infinity,
+                    margin: EdgeInsets.all(30),
+                    child: bikePhoto,
+                  ),
+                ), //Photo Icon/Add Button
+              ),
+              _bikeTypeField(addition, screenSize * .075),
+              _bikeBrandField(addition, screenSize * .075),
+              _bikeModelField(addition, screenSize * .075),
+              _bikeColorField(addition, screenSize * .075),
+              _bikeCombinationField(addition, screenSize * .075),
+              Container(
+                height: screenSize * .2,
                 child: Container(
-                  color: Colors.grey,
-                  width: double.infinity,
-                  height: double.infinity,
-                  margin: EdgeInsets.all(30),
-                  child: bikePhoto,
-                ),
-              ), //Photo Icon/Add Button
-            ),
-            _bikeTypeField(addition),
-            _bikeBrandField(addition),
-            _bikeModelField(addition),
-            _bikeColorField(addition),
-            _bikeCombinationField(addition),
-            Flexible(
-              flex: 3,
-              child: Container(
-                padding: EdgeInsets.all(5),
-                child: SingleChildScrollView(
-                  child: Text(
-                    agreement,
-                    textAlign: TextAlign.center,
+                  padding: EdgeInsets.all(5),
+                  child: SingleChildScrollView(
+                    child: Text(
+                      agreement,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Flexible(
-              flex: 1,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_addBikeFormKey.currentState!.validate()) {
-                    _addBikeFormKey.currentState!.save();
-                    _uploadNewBike(addition);
-                    Navigator.of(context).popAndPushNamed('home');
-                  }
-                },
-                child: Text('Donate Bike'),
-              ),
-            ), //Submit Button
-          ],
+              Container(
+                height: screenSize * .05,
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_addBikeFormKey.currentState!.validate()) {
+                      _addBikeFormKey.currentState!.save();
+                      _uploadNewBike(addition);
+                      Navigator.of(context).popAndPushNamed('home');
+                    }
+                  },
+                  child: Text('Donate Bike'),
+                ),
+              ), //Submit Button
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-Future<void> _updatePhoto(Widget? bikePhoto, BuildContext context) async {
-  bikePhoto = Container(
-      key: UniqueKey(),
-      child: await Navigator.pushNamed(context, 'takePicture') as Widget);
+Future<void> _updatePhoto(Bike addition, BuildContext context) async {
+  File? pic = await Navigator.pushNamed(context, 'takePicture') as File?;
+  addition.image = pic;
+}
+
+Future<String> _uploadPicture(Bike addition) async {
+  Reference storageInstance = FirebaseStorage.instance
+      .ref()
+      .child('_bikeImages')
+      .child('${DateTime.now()}.jpg');
+  UploadTask uploadTask = storageInstance.putFile(addition.image!);
+  await uploadTask;
+  return storageInstance.getDownloadURL();
+}
+
+Future<void> _setLocation(Bike addition) async {
+  var bikeLocation = new Location();
+  var locationEnabled = await bikeLocation.serviceEnabled();
+  if (!locationEnabled) {
+    locationEnabled = await bikeLocation.requestService();
+    if (!locationEnabled) {
+      print("Access denied to location service");
+      return;
+    }
+  }
+  var currentLocation = await bikeLocation.getLocation();
+  addition.latitude = currentLocation.latitude;
+  addition.longitude = currentLocation.longitude;
 }
 
 Future<void> _uploadNewBike(Bike addition) async {
+  String imagePath = await _uploadPicture(addition);
+  await _setLocation(addition);
+  GeoPoint bikeLocation = addition.assembleLocation();
   await FirebaseFirestore.instance.collection("bikes").add({
     'biketype': addition.biketype,
     'brand': addition.brand,
     'color': addition.color,
-    //'imagepath': addition.image_path,
+    'imagepath': imagePath,
     'in_use': false,
-    //'location': addition.assembleLocation(),
+    'location': bikeLocation,
     'model': addition.model,
     'needs_repair': false
   });
 }
 
-Widget _bikeTypeField(Bike addition) {
-  return Flexible(
-    flex: 1,
-    child: Container(
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-      child: TextFormField(
-        onSaved: (value) {
-          addition.biketype = value!;
-        },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please Enter Bike Type';
-          }
-          return null;
-        },
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Bike Type',
-        ),
+Widget _bikeTypeField(Bike addition, double heightVal) {
+  return Container(
+    height: heightVal,
+    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+    child: TextFormField(
+      onSaved: (value) {
+        addition.biketype = value!;
+      },
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please Enter Bike Type';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Bike Type',
       ),
     ),
   );
 }
 
-Widget _bikeBrandField(Bike addition) {
-  return Flexible(
-    flex: 1,
-    child: Container(
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-      child: TextFormField(
-        onSaved: (value) {
-          addition.brand = value!;
-        },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please Enter Brand';
-          }
-          return null;
-        },
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Bike Brand',
-        ),
+Widget _bikeBrandField(Bike addition, double heightVal) {
+  return Container(
+    height: heightVal,
+    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+    child: TextFormField(
+      onSaved: (value) {
+        addition.brand = value!;
+      },
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please Enter Brand';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Bike Brand',
       ),
     ),
   );
 }
 
-Widget _bikeColorField(Bike addition) {
-  return Flexible(
-    flex: 1,
-    child: Container(
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-      child: TextFormField(
-        onSaved: (value) {
-          addition.color = value!;
-        },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please Enter Color';
-          }
-          return null;
-        },
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Bike Color',
-        ),
+Widget _bikeColorField(Bike addition, double heightVal) {
+  return Container(
+    height: heightVal,
+    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+    child: TextFormField(
+      onSaved: (value) {
+        addition.color = value!;
+      },
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please Enter Color';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Bike Color',
       ),
     ),
   );
 }
 
-Widget _bikeModelField(Bike addition) {
-  return Flexible(
-    flex: 1,
-    child: Container(
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-      child: TextFormField(
-        onSaved: (value) {
-          addition.model = value!;
-        },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please Enter Model';
-          }
-          return null;
-        },
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Bike Model',
-        ),
+Widget _bikeModelField(Bike addition, double heightVal) {
+  return Container(
+    height: heightVal,
+    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+    child: TextFormField(
+      onSaved: (value) {
+        addition.model = value!;
+      },
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please Enter Model';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Bike Model',
       ),
     ),
   );
 }
 
-Widget _bikeCombinationField(Bike addition) {
-  return Flexible(
-    flex: 1,
-    child: Container(
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-      child: TextFormField(
-        onSaved: (value) {
-          addition.combination = value!;
-        },
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please Enter Lock Combination';
-          }
-          return null;
-        },
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Lock Combination',
-        ),
+Widget _bikeCombinationField(Bike addition, double heightVal) {
+  return Container(
+    height: heightVal,
+    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+    child: TextFormField(
+      onSaved: (value) {
+        addition.combination = value!;
+      },
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please Enter Lock Combination';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        labelText: 'Lock Combination',
       ),
     ),
   );

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:the_bike_kollective/widget/formattedFormInput.dart';
-import 'package:the_bike_kollective/objects/issue_record.dart';
 
 class ReportIssue extends StatefulWidget {
   @override
@@ -24,9 +22,9 @@ class _ReportIssueState extends State<ReportIssue> {
         key: _reportIssueKey,
         child: Column(
           children: [
-            formattedFormInput(flexVal: 1, placeholderTxt: 'Bike Name'),
-            //dropdown here
-            formattedFormInput(flexVal: 4, placeholderTxt: 'Issue Details'),
+            // formattedFormInput(flexVal: 1, placeholderTxt: 'Bike Name'),
+            // //dropdown here
+            // formattedFormInput(flexVal: 4, placeholderTxt: 'Issue Details'),
             Flexible(
               flex: 1,
               child: ElevatedButton(

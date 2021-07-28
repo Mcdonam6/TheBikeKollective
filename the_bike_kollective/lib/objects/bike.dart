@@ -1,5 +1,5 @@
-import 'package:geopoint/geopoint.dart';
-import 'package:latlong2/latlong.dart';
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Bike {
   final typesOfBikes = [
@@ -12,7 +12,7 @@ class Bike {
   String? biketype;
   String? brand;
   String? color;
-  String? image_path;
+  File? image;
   String? model;
   String? combination;
   double? latitude;
@@ -25,7 +25,7 @@ class Bike {
     this.brand,
     this.color,
     this.combination,
-    this.image_path,
+    this.image,
     this.latitude,
     this.longitude,
     this.in_use = false,
@@ -34,6 +34,6 @@ class Bike {
   ]);
 
   GeoPoint assembleLocation() {
-    return GeoPoint.fromLatLng(point: LatLng(this.latitude!, this.longitude!));
+    return GeoPoint(this.latitude!, this.longitude!);
   }
 }

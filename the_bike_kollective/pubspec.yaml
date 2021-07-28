@@ -24,8 +24,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # Database plugin
+  # Database plugins
   cloud_firestore:
+  firebase_storage: 
 
   #google icon
   font_awesome_flutter: ^9.0.0

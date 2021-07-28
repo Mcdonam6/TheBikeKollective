@@ -26,8 +26,9 @@ class _PictureState extends State<TakePicture> {
   @override
   void initState() {
     super.initState();
-    photoController =
-        new CameraController(widget.camera, ResolutionPreset.medium);
+    photoController = new CameraController(
+        widget.camera, ResolutionPreset.medium,
+        imageFormatGroup: ImageFormatGroup.yuv420);
     initializedController = photoController.initialize();
   }
 
@@ -55,8 +56,7 @@ class _PictureState extends State<TakePicture> {
           try {
             await initializedController;
             var picFile = await photoController.takePicture();
-            Widget newpicture = Image.file(File(picFile.toString()));
-            Navigator.pop(context, newpicture);
+            Navigator.pop(context, File(picFile.path));
           } catch (e) {
             print(e);
           }
