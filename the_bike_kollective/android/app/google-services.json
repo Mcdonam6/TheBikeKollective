@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "438429693439",
+    "firebase_url": "https://bike-kollective-5c5f2-default-rtdb.firebaseio.com",
     "project_id": "bike-kollective-5c5f2",
     "storage_bucket": "bike-kollective-5c5f2.appspot.com"
   },
@@ -19,6 +20,14 @@
           "android_info": {
             "package_name": "com.example.the_bike_kollective",
             "certificate_hash": "187b57c0b5d27393c0c8d350bba50024e35d5ad1"
+          }
+        },
+        {
+          "client_id": "438429693439-oa32dct6sa3usndoseuuk8r6a78udpa2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.the_bike_kollective",
+            "certificate_hash": "69b5d2b66e0c6d4c5a7668a23a8a5e188a78d13f"
           }
         },
         {
