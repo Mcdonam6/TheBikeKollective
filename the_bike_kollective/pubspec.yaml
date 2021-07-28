@@ -24,8 +24,11 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Database plugin
+  cloud_firestore:
+
   #google icon
-  font_awesome_flutter: ^8.10.0
+  font_awesome_flutter: ^9.0.0
 
   #google sign in plug ins
   firebase_auth: ^2.0.0
@@ -36,6 +39,10 @@ dependencies:
   camera:
   path_provider:
   path:
+
+  # Location plugins
+  location: 
+  geopoint: ^1.0.0
 
 
 dev_dependencies:

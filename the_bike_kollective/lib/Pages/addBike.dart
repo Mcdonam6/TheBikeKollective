@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:the_bike_kollective/widget/formattedFormInput.dart';
-import 'package:the_bike_kollective/Pages/takePicture.dart';
+import 'package:the_bike_kollective/objects/bike.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddBike extends StatefulWidget {
-  final cameras;
-  const AddBike({this.cameras});
-
   @override
-  _AddBikeState createState() => _AddBikeState(cameras);
+  _AddBikeState createState() => _AddBikeState();
 }
 
 const agreement = '''Bike Donation Agreement: 
@@ -18,14 +16,19 @@ The bike works, and I release interest in the bike after submitting this form.
 After donation, this bike belongs to the kollective.''';
 
 class _AddBikeState extends State<AddBike> {
-  final cameras;
   final GlobalKey<FormState> _addBikeFormKey = GlobalKey<FormState>();
-  Widget bikePhoto = Icon(Icons.add_a_photo);
+  Widget? bikePhoto;
+  List<Widget> formFields = [];
 
-  _AddBikeState(this.cameras);
+  @override
+  void initState() {
+    super.initState();
+    bikePhoto = Container(key: UniqueKey(), child: Icon(Icons.add_a_photo));
+  }
 
   @override
   Widget build(BuildContext context) {
+    // formFields = addFields(context, _addBikeFormKey, bikePhoto);
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -41,7 +44,10 @@ class _AddBikeState extends State<AddBike> {
             Flexible(
               flex: 6,
               child: GestureDetector(
-                onTap: () => _updatePhoto(bikePhoto, cameras, context),
+                onTap: () {
+                  _updatePhoto(bikePhoto, context);
+                  setState(() {});
+                },
                 child: Container(
                   color: Colors.grey,
                   width: double.infinity,
@@ -51,10 +57,13 @@ class _AddBikeState extends State<AddBike> {
                 ),
               ), //Photo Icon/Add Button
             ),
-            formattedFormInput(placeholderTxt: 'Bike Name'),
-            formattedFormInput(placeholderTxt: 'Bike Type'),
-            formattedFormInput(placeholderTxt: 'Bike Details'),
-            formattedFormInput(placeholderTxt: 'Lock Combination'),
+            formattedFormInput(
+              flexVal: 1,
+              placeholderTxt: 'Bike Name',
+            ),
+            formattedFormInput(flexVal: 1, placeholderTxt: 'Bike Type'),
+            formattedFormInput(flexVal: 1, placeholderTxt: 'Bike Details'),
+            formattedFormInput(flexVal: 1, placeholderTxt: 'Lock Combination'),
             Flexible(
                 flex: 3,
                 child: Container(
@@ -66,7 +75,12 @@ class _AddBikeState extends State<AddBike> {
             Flexible(
               flex: 1,
               child: ElevatedButton(
-                onPressed: () => {},
+                onPressed: () {
+                  if (_addBikeFormKey.currentState!.validate()) {
+                    _addBikeFormKey.currentState!.save();
+                    Navigator.of(context).popAndPushNamed('home');
+                  }
+                },
                 child: Text('Donate Bike'),
               ),
             ), //Submit Button
@@ -77,10 +91,40 @@ class _AddBikeState extends State<AddBike> {
   }
 }
 
-void _updatePhoto(Widget bikePhoto, List cameras, BuildContext context) {
-  Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) =>
-              TakePicture(picture: bikePhoto, cameras: cameras)));
+Future<void> _updatePhoto(Widget? bikePhoto, BuildContext context) async {
+  bikePhoto = Container(
+      key: UniqueKey(),
+      child: await Navigator.pushNamed(context, 'takePicture') as Widget);
 }
+
+// Bike _saveForm(List<Widget> formFields) {
+//   return   Bike(
+//     formFields,
+//     brand,
+//     color,
+//     image_path,
+//     latitude,
+//     longitude,
+//     in_use: false,
+//     model,
+//     needs_repair,
+//   );
+// }
+
+void _uploadNewBike(Bike addition) {
+  final bikeTable = FirebaseFirestore.instance.collection('bikes').add({
+    'biketype': addition.biketype,
+    'brand': addition.brand,
+    'color': addition.color,
+    'imagepath': addition.image_path,
+    'in_use': false,
+    'location': addition.assembleLocation(),
+    'model': addition.model,
+    'needs_repair': false
+  });
+}
+
+// List<Widget> addFields(BuildContext context,
+//     GlobalKey<FormState> _addBikeFormKey, Widget bikePhoto) {
+//    ;
+// }

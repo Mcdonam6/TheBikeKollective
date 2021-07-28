@@ -1,3 +1,6 @@
+import 'package:geopoint/geopoint.dart';
+import 'package:latlong2/latlong.dart';
+
 class Bike {
   final typesOfBikes = [
     'Mountain Bike',
@@ -27,4 +30,8 @@ class Bike {
     this.model,
     this.needs_repair,
   );
+
+  GeoPoint assembleLocation() {
+    return GeoPoint.fromLatLng(point: LatLng(this.latitude, this.longitude));
+  }
 }

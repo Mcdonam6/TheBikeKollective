@@ -6,10 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Login extends StatelessWidget {
-  final cameras;
-
-  const Login({this.cameras});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +23,7 @@ class Login extends StatelessWidget {
                 Provider.of<GoogleSignInProvider>(context, listen: false);
 
             if (snapshot.hasData) {
-              return Home(cameras: cameras);
+              return Home();
             } else {
               return SignUpWidget();
             }
