@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:the_bike_kollective/Pages/gMapView.dart';
 
 class FindBike extends StatefulWidget {
   @override
@@ -16,6 +17,7 @@ class _FindBikeState extends State<FindBike> {
           ),
         ),
       ),
+      body: MapsPage()
     );
   }
 }

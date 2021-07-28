@@ -8,16 +8,18 @@ import 'package:location/location.dart';
 //information to be displayed in marker pill for a bike
 class PinInformation {
 
-  //TODO add all items that are to be displayed in the marker pill
   LatLng location;
   String bikeType;
+  String bikeBrand;
+  String bikeModel;
   String bikePicture;
 
   PinInformation({
     required this.location,
     required this.bikeType,
+    required this.bikeBrand,
+    required this.bikeModel,
     required this.bikePicture,
-
   });
 }
 
@@ -28,17 +30,20 @@ class MapsPage extends StatefulWidget {
   _MapsPageState createState() => _MapsPageState();
 }
 
+
 class _MapsPageState extends State<MapsPage> {
 
   //Google Maps Controller
   late GoogleMapController myController;
 
+  //get user location
+  Location location = new Location();
 
   //set that refreshes with all bike markers
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
-  //get user location
-  Location location = new Location();
+  //Google Maps custom marker
+  late BitmapDescriptor bikeIcon;
 
   //define initial marker pill location to be off the screen
   double pinPillPosition = -200;
@@ -47,19 +52,29 @@ class _MapsPageState extends State<MapsPage> {
   PinInformation currentlySelectedPin = PinInformation(
       location: LatLng(0, 0),
       bikeType: "",
+      bikeBrand: "",
+      bikeModel: "",
       bikePicture: "",
       );
-
-  late PinInformation sourcePinInfo;
 
 
   //function used by marker on tap to populate a pill to be the currently
   //selected marker
-  void setSelectedPin(LatLng location, String bikeType, String bikePicture ){
-    currentlySelectedPin = PinInformation(
-        location: location,
-        bikeType: bikeType,
-        bikePicture: bikePicture);
+  void setSelectedPin(LatLng location, String bikeType, String bikeBrand,
+      String bikeModel, String bikePicture) {
+        currentlySelectedPin = PinInformation(
+          location: location,
+          bikeType: bikeType,
+          bikeBrand: bikeBrand,
+          bikeModel: bikeModel,
+          bikePicture: bikePicture);
+  }
+
+  //set custom google marker
+  void setSourceIcon() async {
+    bikeIcon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(devicePixelRatio: 10.5),
+        'assets/bikeIcon2.png');
   }
 
   //get bike data returned from Firestore and each bike to the bike markers set
@@ -69,6 +84,7 @@ class _MapsPageState extends State<MapsPage> {
     final MarkerId markerId = MarkerId(markerIdVal);
     final Marker marker = Marker(
         markerId: markerId,
+        icon: bikeIcon,
         position: LatLng(bikeData['location'].latitude, bikeData['location'].longitude),
         infoWindow: InfoWindow(title: bikeData['biketype'], snippet:bikeData['brand']),
       onTap: () {
@@ -76,6 +92,8 @@ class _MapsPageState extends State<MapsPage> {
           setSelectedPin(
               LatLng(bikeData['location'].latitude, bikeData['location'].longitude),
               bikeData['biketype'],
+              bikeData['brand'],
+              bikeData['model'],
               bikeData['image_path']);
           pinPillPosition = 100;
         });
@@ -97,9 +115,6 @@ class _MapsPageState extends State<MapsPage> {
       if(bikeData.docs.isNotEmpty){
         for(int i = 0; i < bikeData.docs.length; i ++){
           //check if bike is in use
-          print(bikeData.docs[i]["color"]);
-          print(bikeData.docs[i]["in_use"]);
-
           if (bikeData.docs[i]["in_use"] != true && bikeData.docs[i]["needs_repair"] != true){
             initMarker(bikeData.docs[i].data(), bikeData.docs[i].id);
           }
@@ -114,19 +129,12 @@ class _MapsPageState extends State<MapsPage> {
   //function that will execute when map view is created
   _onMapCreated(GoogleMapController controller){
     setState(() {
-      //getMarkerData();
       myController = controller;
       _animateToUser();
     });
   }
 
 
-  //override initial state method to display all markers
-  void initState(){
-    getMarkerData();
-    super.initState();
-
-  }
 
   //function get user location and then zoom to location when the map is first open
   _animateToUser() async {
@@ -139,6 +147,13 @@ class _MapsPageState extends State<MapsPage> {
         )
     )
     );
+  }
+
+  //override initial state to set markers and set custom pin icons
+  void initState(){
+    getMarkerData();
+    super.initState();
+    setSourceIcon();
   }
 
   @override
@@ -170,7 +185,7 @@ class _MapsPageState extends State<MapsPage> {
                   alignment: Alignment.bottomCenter,
                   child: Container(
                       margin: EdgeInsets.all(20),
-                      height: 100,
+                      height: 125,
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -192,6 +207,7 @@ class _MapsPageState extends State<MapsPage> {
                               child: 
                                 Image(
                                   image: NetworkImage(currentlySelectedPin.bikePicture),
+                                  //image: AssetImage('assets/bikeIcon1.png'),
                                   fit: BoxFit.cover,
                                 ),
                             )
@@ -205,24 +221,36 @@ class _MapsPageState extends State<MapsPage> {
                                   children: <Widget>[
                                     Text(
                                       currentlySelectedPin.bikeType,
-                                      style: TextStyle(
-                                          //color: currentlySelectedPin.labelColor
-                                      )
                                     ),
                                     Text(
-                                      'Latitude: ${currentlySelectedPin.location.latitude.toString()}',
+                                      'Brand: ${currentlySelectedPin.bikeBrand}',
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.grey
                                       )
                                     ),
                                     Text(
-                                      'Longitude: ${currentlySelectedPin.location.longitude.toString()}',
+                                      'Model: ${currentlySelectedPin.bikeModel}',
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.grey,
                                       )
 
+                                    ),
+                                    Container(
+                                      width:100, height: 30,
+                                        child: ElevatedButton.icon(
+                                          icon: Icon(Icons.error_outline_rounded),
+                                          label: Text("Report",
+                                          style: TextStyle(
+                                            fontSize: 12
+                                          )
+                                          ),
+                                          onPressed: (){}, //TODO implement repair/missing functionality
+                                          style: ButtonStyle(
+                                              backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
+                                          ),
+                                        )
                                     ),
                                   ])
                             )
@@ -231,6 +259,7 @@ class _MapsPageState extends State<MapsPage> {
                             padding: EdgeInsets.all(15),
                             child:FloatingActionButton(
                               child:Text('Ride'),
+                              //TODO implement checkout functionality
                               onPressed: () {  },)
                           ),
                         ],

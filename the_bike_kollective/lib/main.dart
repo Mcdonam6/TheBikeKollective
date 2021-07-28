@@ -15,7 +15,7 @@ Future main() async {
 
     //create routes
       routes: {
-        '/':(context)=> MapsPage(), //initial route can be updated to test screens
+        '/':(context)=> Home(), //initial route can be updated to test screens
         '/home':(context)=> Home(), //home screen
         '/login':(context)=> Login(), //login screen
       }
