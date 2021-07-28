@@ -22,6 +22,7 @@ class Home extends StatelessWidget {
           ]),
         ),
         body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
           children: [
             Account(),
             FindBike(),

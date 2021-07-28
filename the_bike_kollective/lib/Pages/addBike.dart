@@ -20,13 +20,16 @@ After donation, this bike belongs to the kollective.''';
 class _AddBikeState extends State<AddBike> {
   final GlobalKey<FormState> _addBikeFormKey = GlobalKey<FormState>();
   Widget? bikePhoto;
-  List<Widget> formFields = [];
   Bike addition = new Bike();
 
   @override
   void initState() {
     super.initState();
-    bikePhoto = Container(key: UniqueKey(), child: Icon(Icons.add_a_photo));
+    bikePhoto = Container(
+      color: Colors.grey,
+      key: UniqueKey(),
+      child: Icon(Icons.add_a_photo),
+    );
   }
 
   @override
@@ -62,7 +65,6 @@ class _AddBikeState extends State<AddBike> {
                     );
                   },
                   child: Container(
-                    color: Colors.grey,
                     width: double.infinity,
                     height: double.infinity,
                     margin: EdgeInsets.all(30),
@@ -108,11 +110,6 @@ class _AddBikeState extends State<AddBike> {
   }
 }
 
-Future<void> _updatePhoto(Bike addition, BuildContext context) async {
-  File? pic = await Navigator.pushNamed(context, 'takePicture') as File?;
-  addition.image = pic;
-}
-
 Future<String> _uploadPicture(Bike addition) async {
   Reference storageInstance = FirebaseStorage.instance
       .ref()
@@ -123,6 +120,7 @@ Future<String> _uploadPicture(Bike addition) async {
   return storageInstance.getDownloadURL();
 }
 
+//Location Setting for bike object
 Future<void> _setLocation(Bike addition) async {
   var bikeLocation = new Location();
   var locationEnabled = await bikeLocation.serviceEnabled();
@@ -138,6 +136,7 @@ Future<void> _setLocation(Bike addition) async {
   addition.longitude = currentLocation.longitude;
 }
 
+// Database and cloud storage Upload Functions
 Future<void> _uploadNewBike(Bike addition) async {
   String imagePath = await _uploadPicture(addition);
   await _setLocation(addition);
@@ -146,13 +145,21 @@ Future<void> _uploadNewBike(Bike addition) async {
     'biketype': addition.biketype,
     'brand': addition.brand,
     'color': addition.color,
-    'imagepath': imagePath,
+    'combination': addition.combination,
+    'image_path': imagePath,
     'in_use': false,
     'location': bikeLocation,
     'model': addition.model,
     'needs_repair': false
   });
 }
+
+Future<void> _updatePhoto(Bike addition, BuildContext context) async {
+  File? pic = await Navigator.pushNamed(context, 'takePicture') as File?;
+  addition.image = pic;
+}
+
+// Form Data Field Widgets
 
 Widget _bikeTypeField(Bike addition, double heightVal) {
   return Container(
