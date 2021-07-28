@@ -9,29 +9,31 @@ class Bike {
     'Road Bike',
   ];
 
-  final String biketype;
-  final String brand;
-  final String color;
-  final String image_path;
-  final String model;
-  double latitude;
-  double longitude;
+  String? biketype;
+  String? brand;
+  String? color;
+  String? image_path;
+  String? model;
+  String? combination;
+  double? latitude;
+  double? longitude;
   bool needs_repair;
   bool in_use;
 
-  Bike(
+  Bike([
     this.biketype,
     this.brand,
     this.color,
+    this.combination,
     this.image_path,
     this.latitude,
     this.longitude,
-    this.in_use,
+    this.in_use = false,
     this.model,
-    this.needs_repair,
-  );
+    this.needs_repair = false,
+  ]);
 
   GeoPoint assembleLocation() {
-    return GeoPoint.fromLatLng(point: LatLng(this.latitude, this.longitude));
+    return GeoPoint.fromLatLng(point: LatLng(this.latitude!, this.longitude!));
   }
 }
