@@ -3,6 +3,7 @@ import 'package:the_bike_kollective/Pages/home.dart';
 import 'package:the_bike_kollective/Pages/takePicture.dart';
 import 'package:the_bike_kollective/Pages/login.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:the_bike_kollective/Pages/gMapView.dart';
 import 'package:camera/camera.dart';
 
 Future main() async {
