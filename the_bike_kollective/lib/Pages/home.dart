@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:the_bike_kollective/Pages/findBike.dart';
 import 'package:the_bike_kollective/Pages/addBike.dart';
 import 'package:the_bike_kollective/Pages/reportIssue.dart';
-
 import 'package:the_bike_kollective/Pages/account.dart';
-
-
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -25,6 +22,7 @@ class Home extends StatelessWidget {
           ]),
         ),
         body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
           children: [
             Account(),
             FindBike(),

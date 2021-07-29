@@ -25,7 +25,7 @@ class _AccountState extends State<Account> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
-          children:[
+          children: [
             Text('Logged In'),
             SizedBox(height: 8),
             CircleAvatar(
@@ -40,14 +40,20 @@ class _AccountState extends State<Account> {
               final provider = Provider.of<GoogleSignInProvider>(context, listen:false);
               provider.logout();
             },
+            SizedBox(height: 8),
+            Text('Name ' + user!.displayName!),
+            SizedBox(height: 8),
+            Text('Email ' + user!.email!),
+            ElevatedButton(
+                onPressed: () {
+                  final provider =
+                      Provider.of<GoogleSignInProvider>(context, listen: false);
+                  provider.logout();
+                },
                 child: Text("Logout")),
           ],
         ),
       ),
     );
   }
-}
-
-void _logout() {
-  //Stub for Logout Function
 }
