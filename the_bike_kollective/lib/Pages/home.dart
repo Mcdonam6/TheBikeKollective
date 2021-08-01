@@ -3,6 +3,7 @@ import 'package:the_bike_kollective/Pages/findBike.dart';
 import 'package:the_bike_kollective/Pages/addBike.dart';
 import 'package:the_bike_kollective/Pages/reportIssue.dart';
 import 'package:the_bike_kollective/Pages/account.dart';
+import 'package:the_bike_kollective/Pages/report.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -27,7 +28,8 @@ class Home extends StatelessWidget {
             Account(),
             FindBike(),
             AddBike(),
-            ReportIssue(),
+            //ReportIssue(passedPin: null,),
+            Report(),
           ],
         ),
       ),
