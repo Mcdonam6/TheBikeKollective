@@ -51,6 +51,9 @@ dependencies:
   # Location plugins
   geopoint: ^1.0.0
 
+  # Ride page plugins
+  confirm_dialog: ^1.0.0
+
 
 
 dev_dependencies:
