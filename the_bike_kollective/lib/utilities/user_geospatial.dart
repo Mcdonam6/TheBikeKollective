@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location/location.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
-import 'package:the_bike_kollective/objects/pins.dart';
+import 'package:the_bike_kollective/objects/PinInformation.dart';
 
 class UserLocation {
   static Location _user = new Location();

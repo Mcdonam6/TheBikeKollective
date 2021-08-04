@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:the_bike_kollective/objects/pins.dart';
+import 'package:the_bike_kollective/objects/PinInformation.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:the_bike_kollective/utilities/user_geospatial.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
-CollectionReference bikeData = FirebaseFirestore.instance.collection('bikes');
+//CollectionReference bikeData = FirebaseFirestore.instance.collection('bikes');
 
 class ActiveRide extends StatefulWidget {
   //initilize with pin information object passed from map screen

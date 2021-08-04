@@ -3,10 +3,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location/location.dart';
 import 'package:the_bike_kollective/utilities/user_geospatial.dart';
-import 'activeRide.dart';
+import 'package:the_bike_kollective/Pages/activeRide.dart';
 import 'package:the_bike_kollective/Pages/report.dart';
 import 'package:the_bike_kollective/objects/PinInformation.dart';
-
 
 
 class MapsPage extends StatefulWidget {
@@ -157,13 +156,13 @@ class _MapsPageState extends State<MapsPage> {
               });
             }
           ),
-          onMapCreated: _onMapCreated,
-          myLocationEnabled: true,
-          onTap: (LatLng location) {
-            setState(() {
-              pinPillPosition = -200;
-            });
-          }),
+          // onMapCreated: _onMapCreated,
+          // myLocationEnabled: true,
+          // onTap: (LatLng location) {
+          //   setState(() {
+          //     pinPillPosition = -200;
+          //   });
+          // }),
       AnimatedPositioned(
           bottom: pinPillPosition,
           right: 0,
@@ -255,6 +254,9 @@ class _MapsPageState extends State<MapsPage> {
           )
     ]));
   }
+
+
+
 
   Widget _checkoutButton(PinInformation bike) {
     if (UserLocation.distanceToBike(bike) < 1) {

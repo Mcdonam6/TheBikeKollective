@@ -93,7 +93,8 @@ class _AddBikeState extends State<AddBike> {
                 height: screenSize * .05,
                 child: ElevatedButton(
                   onPressed: () {
-                    if (_addBikeFormKey.currentState!.validate()) {
+                    if (_addBikeFormKey.currentState!.validate()
+                        && addition.image != null) {
                       _addBikeFormKey.currentState!.save();
                       _uploadNewBike(addition);
                       Navigator.of(context).popAndPushNamed('home');
@@ -150,7 +151,7 @@ Future<void> _uploadNewBike(Bike addition) async {
     'in_use': false,
     'location': bikeLocation,
     'model': addition.model,
-    'needs_repair': false
+    'has_issue': false
   });
 }
 
