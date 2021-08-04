@@ -10,7 +10,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text('The Bike Kollective'),
@@ -18,7 +18,6 @@ class Home extends StatelessWidget {
             Tab(icon: Icon(Icons.person)),
             Tab(icon: Icon(Icons.pedal_bike)),
             Tab(icon: Icon(Icons.add)),
-            Tab(icon: Icon(Icons.build)),
           ]),
         ),
         body: TabBarView(
@@ -27,8 +26,6 @@ class Home extends StatelessWidget {
             Account(),
             FindBike(),
             AddBike(),
-            //ReportIssue(passedPin: null,),
-            Report(),
           ],
         ),
       ),
