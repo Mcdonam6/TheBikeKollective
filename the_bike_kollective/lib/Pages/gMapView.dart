@@ -2,26 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location/location.dart';
+import 'package:the_bike_kollective/Pages/report.dart';
+import 'package:the_bike_kollective/objects/PinInformation.dart';
 
-
-
-//information to be displayed in marker pill for a bike
-class PinInformation {
-
-  LatLng location;
-  String bikeType;
-  String bikeBrand;
-  String bikeModel;
-  String bikePicture;
-
-  PinInformation({
-    required this.location,
-    required this.bikeType,
-    required this.bikeBrand,
-    required this.bikeModel,
-    required this.bikePicture,
-  });
-}
 
 
 class MapsPage extends StatefulWidget {
@@ -50,6 +33,7 @@ class _MapsPageState extends State<MapsPage> {
 
   //create a currently selected Pin object which will be displayed in the Pill
   PinInformation currentlySelectedPin = PinInformation(
+      bikeId: "",
       location: LatLng(0, 0),
       bikeType: "",
       bikeBrand: "",
@@ -60,9 +44,10 @@ class _MapsPageState extends State<MapsPage> {
 
   //function used by marker on tap to populate a pill to be the currently
   //selected marker
-  void setSelectedPin(LatLng location, String bikeType, String bikeBrand,
+  void setSelectedPin(String bikeId, LatLng location, String bikeType, String bikeBrand,
       String bikeModel, String bikePicture) {
         currentlySelectedPin = PinInformation(
+          bikeId: bikeId,
           location: location,
           bikeType: bikeType,
           bikeBrand: bikeBrand,
@@ -90,6 +75,7 @@ class _MapsPageState extends State<MapsPage> {
       onTap: () {
         setState(() {
           setSelectedPin(
+              bikeId,
               LatLng(bikeData['location'].latitude, bikeData['location'].longitude),
               bikeData['biketype'],
               bikeData['brand'],
@@ -115,8 +101,9 @@ class _MapsPageState extends State<MapsPage> {
       if(bikeData.docs.isNotEmpty){
         for(int i = 0; i < bikeData.docs.length; i ++){
           //check if bike is in use
-          if (bikeData.docs[i]["in_use"] != true && bikeData.docs[i]["needs_repair"] != true){
+          if (bikeData.docs[i]["in_use"] != true && bikeData.docs[i]["has_issue"] != true){
             initMarker(bikeData.docs[i].data(), bikeData.docs[i].id);
+
           }
 
         }
@@ -172,6 +159,7 @@ class _MapsPageState extends State<MapsPage> {
             myLocationEnabled: true,
             onTap: (LatLng location) {
               setState(() {
+                getMarkerData();
                 pinPillPosition = -200;
               });
             }
@@ -246,7 +234,13 @@ class _MapsPageState extends State<MapsPage> {
                                             fontSize: 12
                                           )
                                           ),
-                                          onPressed: (){}, //TODO implement repair/missing functionality
+                                          onPressed: (){
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => Report(passedPin:currentlySelectedPin),
+                                            )
+                                            );
+                                          }, //TODO implement repair/missing functionality
                                           style: ButtonStyle(
                                               backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
                                           ),
