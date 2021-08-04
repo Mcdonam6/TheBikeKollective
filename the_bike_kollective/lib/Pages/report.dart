@@ -5,13 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 CollectionReference bikeData = FirebaseFirestore.instance.collection('bikes');
 
 
+//Function to update bike in firebase with a bike issue
 Future<void> updateBike(bikeId, issue) {
   return bikeData
       .doc(bikeId)
       .update({'has_issue': true, 'issue_type':'$issue'});
 }
-
-
 
 
 
@@ -26,36 +25,48 @@ class Report extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            ("Report Bike Issue"),
+        appBar: AppBar(
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text("Report Bike Issue"),
+        ),
+        body: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: ElevatedButton(
+                    child: Text("Repairs Needed",
+                    style: TextStyle(
+                      fontSize: 26
+                    )),
+                    onPressed: () {
+                      updateBike(passedPin!.bikeId,"repair");
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: ElevatedButton(
+                    child: Text("Missing",
+                    style: TextStyle(
+                      fontSize: 26
+                    )),
+                    onPressed: ()  {
+                      updateBike(passedPin!.bikeId, "missing");
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              )
+            ],
           ),
-        ),
-      ),
-      body: Form(
-        child: Column(
-          children: [
-            //_bikeIssueField(context, bike),
-            Flexible(
-              flex: 1,
-              child: ElevatedButton(
-                onPressed: () => {updateBike(passedPin!.bikeId,"repair")},
-                child: Text('Needs Repair'),
-              ),
-            ),
-            Flexible(
-              flex: 1,
-              child: ElevatedButton(
-                onPressed: () => {updateBike(passedPin!.bikeId, "missing"),
-                  Navigator.pop(context)},
-                child: Text('Bike Missing'),
-              ),
-            ),
-            //Submit Button
-          ],
-        ),
-      ),
+        )
     );
   }
 }
