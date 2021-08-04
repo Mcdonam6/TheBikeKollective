@@ -32,6 +32,7 @@ class _AccountState extends State<Account> {
               maxRadius: 25,
               backgroundImage: NetworkImage(user!.photoURL!),
             ),
+
             SizedBox(height:8),
             Text('Name ' + user!.displayName!),
             SizedBox(height:8),
