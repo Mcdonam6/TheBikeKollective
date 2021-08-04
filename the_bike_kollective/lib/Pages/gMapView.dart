@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location/location.dart';
-import 'package:the_bike_kollective/objects/pins.dart';
 import 'package:the_bike_kollective/utilities/user_geospatial.dart';
-
 import 'activeRide.dart';
+import 'package:the_bike_kollective/Pages/report.dart';
+import 'package:the_bike_kollective/objects/PinInformation.dart';
+
+
 
 class MapsPage extends StatefulWidget {
   @override
@@ -30,25 +32,27 @@ class _MapsPageState extends State<MapsPage> {
 
   //create a currently selected Pin object which will be displayed in the Pill
   PinInformation currentlySelectedPin = PinInformation(
-    bikeId: "",
-    location: LatLng(0, 0),
-    bikeType: "",
-    bikeBrand: "",
-    bikeModel: "",
-    bikePicture: "",
-  );
+
+      bikeId: "",
+      location: LatLng(0, 0),
+      bikeType: "",
+      bikeBrand: "",
+      bikeModel: "",
+      bikePicture: "",
+      );
+
 
   //function used by marker on tap to populate a pill to be the currently
   //selected marker
-  void setSelectedPin(String bikeId, LatLng location, String bikeType,
-      String bikeBrand, String bikeModel, String bikePicture) {
-    currentlySelectedPin = PinInformation(
-        bikeId: bikeId,
-        location: location,
-        bikeType: bikeType,
-        bikeBrand: bikeBrand,
-        bikeModel: bikeModel,
-        bikePicture: bikePicture);
+  void setSelectedPin(String bikeId, LatLng location, String bikeType, String bikeBrand,
+      String bikeModel, String bikePicture) {
+        currentlySelectedPin = PinInformation(
+          bikeId: bikeId,
+          location: location,
+          bikeType: bikeType,
+          bikeBrand: bikeBrand,
+          bikeModel: bikeModel,
+          bikePicture: bikePicture);
   }
 
   //set custom google marker
@@ -72,8 +76,8 @@ class _MapsPageState extends State<MapsPage> {
         setState(() {
           setSelectedPin(
               bikeId,
-              LatLng(bikeData['location'].latitude,
-                  bikeData['location'].longitude),
+
+              LatLng(bikeData['location'].latitude, bikeData['location'].longitude),
               bikeData['biketype'],
               bikeData['brand'],
               bikeData['model'],
@@ -96,9 +100,10 @@ class _MapsPageState extends State<MapsPage> {
       if (bikeData.docs.isNotEmpty) {
         for (int i = 0; i < bikeData.docs.length; i++) {
           //check if bike is in use
-          if (bikeData.docs[i]["in_use"] != true &&
-              bikeData.docs[i]["needs_repair"] != true) {
+
+          if (bikeData.docs[i]["in_use"] != true && bikeData.docs[i]["has_issue"] != true){
             initMarker(bikeData.docs[i].data(), bikeData.docs[i].id);
+
           }
         }
       }
@@ -133,13 +138,24 @@ class _MapsPageState extends State<MapsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(children: <Widget>[
-      GoogleMap(
-          // grab all markers to be displayed in the map
-          markers: Set<Marker>.of(this.markers.values),
-          initialCameraPosition: CameraPosition(
-            target: LatLng(37.7749, -122.4194),
-            zoom: 14.0,
+
+      body: Stack (
+        children: <Widget> [
+          GoogleMap(
+            // grab all markers to be displayed in the map
+            markers: Set<Marker>.of(this.markers.values),
+            initialCameraPosition: CameraPosition(
+              target: LatLng(37.7749, -122.4194),
+              zoom: 14.0,
+            ),
+            onMapCreated:_onMapCreated,
+            myLocationEnabled: true,
+            onTap: (LatLng location) {
+              setState(() {
+                getMarkerData();
+                pinPillPosition = -200;
+              });
+            }
           ),
           onMapCreated: _onMapCreated,
           myLocationEnabled: true,
@@ -212,9 +228,17 @@ class _MapsPageState extends State<MapsPage> {
                                           icon:
                                               Icon(Icons.error_outline_rounded),
                                           label: Text("Report",
-                                              style: TextStyle(fontSize: 12)),
-                                          onPressed:
-                                              () {}, //TODO implement repair/missing functionality
+                                          style: TextStyle(
+                                            fontSize: 12
+                                          )
+                                          ),
+                                          onPressed: (){
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => Report(passedPin:currentlySelectedPin),
+                                            )
+                                            );
+                                          }, 
                                           style: ButtonStyle(
                                               backgroundColor:
                                                   MaterialStateProperty.all<

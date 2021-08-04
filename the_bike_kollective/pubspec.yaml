@@ -25,6 +25,8 @@ dependencies:
     sdk: flutter
 
   # Database plugins
+
+  #cloud_firestore:
   firebase_storage: 
 
   #google icon
@@ -49,6 +51,8 @@ dependencies:
   path:
 
   # Location plugins
+
+  #location:
   geopoint: ^1.0.0
 
   # Ride page plugins

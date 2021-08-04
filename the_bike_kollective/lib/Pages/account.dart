@@ -32,17 +32,10 @@ class _AccountState extends State<Account> {
               maxRadius: 25,
               backgroundImage: NetworkImage(user!.photoURL!),
             ),
-            // SizedBox(height:8),
-            // Text('Name ' + user!.displayName!),
-            // SizedBox(height:8),
-            // Text('Email ' + user!.email!),
-            // ElevatedButton(onPressed: () {
-            //   final provider = Provider.of<GoogleSignInProvider>(context, listen:false);
-            //   provider.logout();
-            // }),
-            SizedBox(height: 8),
+
+            SizedBox(height:8),
             Text('Name ' + user!.displayName!),
-            SizedBox(height: 8),
+            SizedBox(height:8),
             Text('Email ' + user!.email!),
             ElevatedButton(
                 onPressed: () {
