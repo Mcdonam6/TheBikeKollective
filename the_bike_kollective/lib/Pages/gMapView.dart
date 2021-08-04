@@ -238,13 +238,20 @@ class _MapsPageState extends State<MapsPage> {
         child: Text('Ride'),
         onPressed: () async {
           bikeData.doc(bike.bikeId).update({'in_use': true});
-          await Navigator.push(
+          GeoPoint newLocation = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => ActiveRide(passedPin: currentlySelectedPin),
             ),
           );
-          bikeData.doc(bike.bikeId).update({'in_use': false});
+          bikeData
+              .doc(bike.bikeId)
+              .update({'in_use': false, 'location': newLocation});
+          setState(() {
+            getMarkerData();
+            pinPillPosition = -200;
+            _animateToUser();
+          });
         },
       );
     } else {

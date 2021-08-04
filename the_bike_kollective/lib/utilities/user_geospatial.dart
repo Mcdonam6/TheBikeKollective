@@ -34,7 +34,8 @@ class UserLocation {
         lat: target.location.latitude, lng: target.location.longitude);
   }
 
-  static GeoPoint currentGeoPoint() {
-    return GeoPoint(_userLocation!.latitude, _userLocation!.longitude);
+  static Future<GeoPoint> currentGeoPoint() async {
+    _initSpot = await _user.getLocation();
+    return GeoPoint(_initSpot!.latitude!, _initSpot!.longitude!);
   }
 }
